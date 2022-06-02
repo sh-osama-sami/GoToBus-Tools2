@@ -1,3 +1,14 @@
+package ejb;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.ejb.*;
+import javax.ejb.Stateless;
+import javax.persistence.*;
+
+
 @Stateless
 @Entity
 @LocalBean
@@ -35,8 +46,6 @@ public class user implements Serializable {
 		Id = id;
 	}
 	
-	
-	
 	public List<notification> notificationsGet() {
 		return notifications;
 	}
@@ -44,13 +53,6 @@ public class user implements Serializable {
 	public void notificationAdd(notification n ) {
 		notifications.add(n);
 	}
-	
-
-
-
-	
-	
-	
 	
 	public user() {
 		

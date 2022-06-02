@@ -33,9 +33,6 @@ public class station implements Serializable{
 		return Id;
 	}
 
-	
-
-
 	public Set<trip> getToStationsTrip() {
 		return toStationsTrip;
 	}
@@ -47,9 +44,7 @@ public class station implements Serializable{
 	public void setId(int id) {
 		Id = id;
 	}
-
 	
-
 	public double getLongitude() {
 		return longitude;
 	}
