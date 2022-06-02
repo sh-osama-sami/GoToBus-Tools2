@@ -120,6 +120,30 @@ public class userService  implements Serializable {
 	{
 		return entityManager.find(trip.class, Id);
 	}
+	@GET
+	@Path("searchtrips")
+	public List<trip> getAllTrips(searchTripInput input) throws ParseException {
+			try {
+			station fromStation = entityManager.find(station.class , input.from_station);
+			station toStation = entityManager.find(station.class , input.to_station);
+			SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy"); 
+			Date fromDate = formatter1.parse(input.from_date);
+			Date toDate = formatter1.parse(input.to_date);
+			List<trip> finalTrips = new ArrayList<trip>();
+			List<trip> trips = listAllTrips();
+			for(trip t:trips)
+			{
+				if(fromStation  == t.fromStationGet() && toStation == t.toStationGet() && fromDate.before(t.fromDateGet())  && (t.fromDateGet()).before(toDate)) 
+					finalTrips.add(t);
+			}
+			return finalTrips;
+			}
+			catch(Exception e)
+			{
+				throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+			}
+			
+	}
 
 	
 	
