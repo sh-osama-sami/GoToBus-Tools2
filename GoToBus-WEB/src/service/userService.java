@@ -246,6 +246,18 @@ public class userService  implements Serializable {
 	}
 	
 	
-
+	@GET
+	@Path("viewtrips/{Id}")
+	public List<trip> userTripsGet(@PathParam("Id") int Id)
+	{
+		try {
+		user u =  entityManager.find(user.class, Id);
+		return u.usertripsget();
+		}
+		catch (Exception e){
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
 	
 }
