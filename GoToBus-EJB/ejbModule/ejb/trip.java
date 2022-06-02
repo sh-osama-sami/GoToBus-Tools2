@@ -47,16 +47,6 @@ public class trip implements Serializable{
 	private List<user> users ;
 	
 	
-	
-	
-	/*public Set<user> getUsers() {
-		return users;
-	}
-	public void setUsers(Set<user> users) {
-		this.users = users;
-	}*/
-	
-	
 	public List<user> usersGet() {
 		return users;
 	}
@@ -68,16 +58,16 @@ public class trip implements Serializable{
 		SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy");  
 		fromDate = formatter1.parse(from_date);
 	}
-	public Date getFromDate() {
+	public Date fromDateGet() {
 		return fromDate;
 	}
-	public void setFromDate(Date fromDate) {
+	public void fromDateSet(Date fromDate) {
 		this.fromDate = fromDate;
 	}
-	public Date getToDate() {
+	public Date toDateGet() {
 		return toDate;
 	}
-	public void setToDate(Date toDate) {
+	public void toDateSet(Date toDate) {
 		this.toDate = toDate;
 	}
 	public void setTo_date_fromtime(String time) throws ParseException {
