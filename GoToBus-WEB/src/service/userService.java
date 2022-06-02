@@ -50,10 +50,30 @@ public class userService  implements Serializable {
 	{
 		return entityManager.find(user.class, Id);
 	}
-
+	@POST
+	@Path("addstation")
+	public void addstation(station u ) {
+		entityManager.persist(u);
+	}
+	
+	@GET
+	@Path("getstation/{Id}")
+	public station getStation(@PathParam("Id") int Id)
+	{
+		return entityManager.find(station.class, Id);
+	}
+	@GET
+	@Path("getstationname/{Name}")
+	public station getStationByName(@PathParam("Name") String name)
+	{
+		return entityManager.createQuery(
+				  "SELECT u from station u WHERE u.name = :name", station.class).
+				  setParameter("name", name).getSingleResult();
+	}
+}
 
 	
 
 
-}
+
 
