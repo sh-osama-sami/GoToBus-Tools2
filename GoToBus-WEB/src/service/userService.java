@@ -51,16 +51,29 @@ public class userService  implements Serializable {
 		return entityManager.find(user.class, Id);
 	}
 	@POST
-	@Path("addstation")
-	public void addstation(station u ) {
+	@Path("station")
+	public String addstation(station u ) {
+		try {
 		entityManager.persist(u);
-	}
+		return "";
 	
+		}
+		catch(Exception e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 	@GET
-	@Path("getstation/{Id}")
+	@Path("station/{Id}")
 	public station getStation(@PathParam("Id") int Id)
 	{
+		try {
 		return entityManager.find(station.class, Id);
+	
+		}
+		catch(Exception e)
+		{
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 	@GET
 	@Path("getstationname/{Name}")
@@ -70,6 +83,47 @@ public class userService  implements Serializable {
 				  "SELECT u from station u WHERE u.name = :name", station.class).
 				  setParameter("name", name).getSingleResult();
 	}
+@POST
+	@Path("trip")
+	public String addTrip(trip t ) throws ParseException  {
+	if(userService.getRole().equals("admin")) {
+		String fromStationName= t.getFrom_station();
+		String toStationName = t.getTo_station();
+		station fromStation = getStationByName(fromStationName);
+		station toStation = getStationByName(toStationName);
+		t.fromStationSet(fromStation);
+		t.toStationSet(toStation);
+		t.setFrom_date_fromtime(t.getDeparture_time());
+		t.setTo_date_fromtime(t.getArrival_time());
+		entityManager.persist(t);
+		return "";
+	}
+	else 
+	{
+		throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+	}
+		
+		
+	}
+	
+	public List<trip> listAllTrips() {
+		List<trip> trips =null;
+		Query query = entityManager.createQuery ("SELECT t FROM trip t");
+		trips = query.getResultList();
+	return trips;
+		
+	}
+	
+	@GET
+	@Path("gettrip/{Id}")
+	public trip getTrip(@PathParam("Id") int Id)
+	{
+		return entityManager.find(trip.class, Id);
+	}
+
+	
+	
+	
 }
 
 	
