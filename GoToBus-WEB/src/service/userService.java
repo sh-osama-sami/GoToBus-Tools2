@@ -144,6 +144,60 @@ public class userService  implements Serializable {
 			}
 			
 	}
+@POST
+	@Path("booktrip")
+	public String bookTrip(bookInput input) {
+		try {
+		if (!userService.equals(null)) {
+		trip t = entityManager.find(trip.class , input.trip_id);
+		user u = entityManager.find(user.class , input.user_id);
+		if (t.getAvailable_seats() > 0)
+		{
+			u.tripAdd(t);
+			t.userAdd(u);
+			int seats = t.getAvailable_seats();
+			seats = seats-1;
+			t.setAvailable_seats(seats);
+			notification n= new notification();
+			n.setMessage("You have booked trip from "+t.getFrom_station()+" to "+t.getTo_station()+" successfully");
+    		String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    		String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    		n.setNotification_datetime( date +" "+ time );
+			u.notificationAdd(n);
+			n.setUsers(u);
+			entityManager.persist(n);
+			entityManager.merge(t);
+			entityManager.merge(u);
+			return "";
+			
+		}
+		else  {
+			notification n= new notification();
+			 n.setMessage("Sorry, Trip"+t.getFrom_station()+"to"+t.getTo_station()+"r have no available seats");
+			 String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			 String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+			 n.setNotification_datetime( date +" "+ time );
+			 u.notificationAdd(n);
+			 n.setUsers(u);
+			 entityManager.persist(n);
+			 entityManager.merge(t);
+			 entityManager.merge(u);
+				return "";
+		}
+			
+		}
+		else 
+		{
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		}
+		catch (Exception e){
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+			
+	}
+
 
 	
 	
