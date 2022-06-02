@@ -41,13 +41,14 @@ public class userService  implements Serializable {
 	user userService = null;
 	@POST
 	@Path("login")
-	public void login(loginInput i ) {
+	public String login(loginInput i ) {
 		user u = getUserByName(i.getUsername());
 		if(u != null)
 		{
 			if(u.getPassword().equals(i.getPassword()))
 			{
 				userService = u;
+				return "";
 			}
 			else 
 			{
