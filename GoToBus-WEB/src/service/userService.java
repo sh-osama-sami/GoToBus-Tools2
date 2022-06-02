@@ -37,18 +37,65 @@ public class userService  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@PersistenceContext(unitName = "hello" )
 	private EntityManager entityManager;
-	
+	@Inject
+	user userService = null;
 	@POST
-	@Path("adduser")
-	public void addUser(user u ) {
-		entityManager.persist(u);
+	@Path("login")
+	public void login(loginInput i ) {
+		user u = getUserByName(i.getUsername());
+		if(u != null)
+		{
+			if(u.getPassword().equals(i.getPassword()))
+			{
+				userService = u;
+			}
+			else 
+			{
+				throw new WebApplicationException(Response.Status.BAD_REQUEST);
+			}
+		}
+		else 
+		{
+			throw new WebApplicationException(Response.Status.BAD_REQUEST);
+		}
 	}
 	
-	@GET
-	@Path("getuser/{Id}")
-	public user sayHello(@PathParam("Id") int Id)
+	public user getUserByName(String name)
+	{ 	try {
+			return entityManager.createQuery(
+				  "SELECT u from user u WHERE u.username = :name", user.class).
+				  setParameter("name", name).getSingleResult();
+			}
+		catch(Exception e){
+			return null;
+		}
+	}
+	
+	@POST
+	@Path("user")
+	public String addUser(user u ) {
+		entityManager.persist(u);
+		return "";
+	}
+	
+	
+	public user getUserById(@PathParam("Id") int Id)
 	{
 		return entityManager.find(user.class, Id);
+	}
+	
+	
+	@GET
+	@Path("notifications/{Id}")
+	public List<notification> viewNotifications(@PathParam("Id") int Id)
+	{
+		try {
+		user u= entityManager.find(user.class, Id);
+		return u.notificationsGet();
+		}
+		catch (Exception e){
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 	@POST
 	@Path("station")
@@ -75,15 +122,15 @@ public class userService  implements Serializable {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 	}
-	@GET
-	@Path("getstationname/{Name}")
-	public station getStationByName(@PathParam("Name") String name)
+
+	public station getStationByName(String name)
 	{
 		return entityManager.createQuery(
 				  "SELECT u from station u WHERE u.name = :name", station.class).
 				  setParameter("name", name).getSingleResult();
 	}
-@POST
+
+	@POST
 	@Path("trip")
 	public String addTrip(trip t ) throws ParseException  {
 	if(userService.getRole().equals("admin")) {
@@ -103,7 +150,6 @@ public class userService  implements Serializable {
 		throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 	}
 		
-		
 	}
 	
 	public List<trip> listAllTrips() {
@@ -114,12 +160,13 @@ public class userService  implements Serializable {
 		
 	}
 	
-	@GET
-	@Path("gettrip/{Id}")
-	public trip getTrip(@PathParam("Id") int Id)
+	
+	public trip getTrip(int Id)
 	{
 		return entityManager.find(trip.class, Id);
 	}
+	
+	
 	@GET
 	@Path("searchtrips")
 	public List<trip> getAllTrips(searchTripInput input) throws ParseException {
@@ -144,7 +191,7 @@ public class userService  implements Serializable {
 			}
 			
 	}
-@POST
+	@POST
 	@Path("booktrip")
 	public String bookTrip(bookInput input) {
 		try {
@@ -197,15 +244,8 @@ public class userService  implements Serializable {
 		
 			
 	}
-
-
 	
 	
+
 	
 }
-
-	
-
-
-
-
